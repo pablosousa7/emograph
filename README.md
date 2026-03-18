@@ -1,37 +1,22 @@
-# EmoGraph – Infinite Emotional Memory for AIs
+# EmoGraph – Infinite Emotional Memory with Adaptive Personality Engine
 
-**The first Brazilian API for persistent emotional memory for any LLM.**
+**The ultimate emotional intelligence layer for any LLM.**
 
-Inspired by Supermemory.ai, but 100% focused on **emotions** (the biggest missing piece in AI today).
+EmoGraph turns any AI into a truly empathetic companion by remembering emotions forever, detecting 27 emotions in real time (any language), learning the user’s personality profile, and delivering personalized, non-generic advice.
 
-### What it does
-- Detects **27 emotions** in Portuguese (and any language) using open-source 2026 models
-- Stores everything in a **persistent vector database** (never loses data)
-- Lets any AI remember the user’s emotional state forever
-- Simple, fast, production-ready API
+### Key Features
+- Real-time detection of 27 emotions (joy, sadness, anger, fear, etc.) – works perfectly in Portuguese and English
+- Persistent vector memory that never forgets
+- Adaptive Personality Engine – automatically learns if the user is action-oriented, stoic, reflective or creative
+- Personalized advice engine – no generic responses. Tough guys get career/project momentum suggestions. Reflective users get deep pattern analysis.
+- Smart Recall – returns past memories + emotional trends + ready-to-use safe guidance
 
-### Real-world examples
-- Emotional companion: “I remember you were anxious about the exam last week…”
-- Customer support: responds with real empathy based on past interactions
-- AI tutor: adapts lessons to the student’s mood
-- Digital therapy: tracks emotional progress over months
+### Endpoints
+- `POST /ingest` – save emotional memory
+- `POST /recall` – basic memory search
+- `POST /smart_recall` – full intelligence (memories + trends + personality + personalized advice)
 
-### Current status (March 2026)
-✅ MVP v0.1 live  
-✅ Multilingual emotion detection  
-✅ Persistent vector memory (ChromaDB)  
-✅ /ingest and /recall endpoints  
-✅ Automatic Swagger UI  
-🔄 Next: public deployment + Telegram/WhatsApp + Neo4j graph
-
-### Tech stack
-- Python + FastAPI
-- Hugging Face (model: AnasAlokla/multilingual_go_emotions_V1.2)
-- ChromaDB + SentenceTransformers (multilingual embeddings)
-- Pydantic + CORS
-
-### How to run locally (2 minutes)
-
+### How to run locally
 ```bash
 pip install -r requirements.txt
 python main.py
