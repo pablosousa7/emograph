@@ -3,11 +3,18 @@ from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunct
 from datetime import datetime
 from typing import List, Dict
 import uuid
-from core.advice_engine import infer_personality  # <-- novo import
+from core.advice_engine import infer_personality
 
 class MemoryStore:
     def __init__(self):
-        self.client = chromadb.PersistentClient(path="./chroma_db")
+        settings = chromadb.Settings(
+            anonymized_telemetry=False,
+            allow_reset=True
+        )
+        self.client = chromadb.PersistentClient(
+            path="./chroma_db",
+            settings=settings
+        )
         self.embedding_function = SentenceTransformerEmbeddingFunction(
             model_name="paraphrase-multilingual-MiniLM-L12-v2"
         )
@@ -35,7 +42,6 @@ class MemoryStore:
             n_results=limit,
             where={"user_id": user_id}
         )
-        
         memories = []
         for i in range(len(results["documents"][0])):
             meta = results["metadatas"][0][i]
@@ -47,7 +53,7 @@ class MemoryStore:
             })
         return memories
 
-    def get_emotional_trends(self, user_id: str, days: int = 30) -> dict:
+    def get_emotional_trends(self, user_id: str) -> dict:
         results = self.collection.query(query_texts=[""], n_results=50, where={"user_id": user_id})
         trends = {"sadness_trend": 0, "anger_recurrence": 0, "total_memories": 0}
         if not results["documents"][0]:

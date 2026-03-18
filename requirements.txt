@@ -6,3 +6,4 @@ transformers==4.48.0
 sentence-transformers==3.4.1
 python-multipart==0.0.20
 python-dotenv==1.0.1
+posthog==3.5.0

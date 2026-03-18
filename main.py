@@ -1,14 +1,20 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+os.environ["CHROMA_TELEMETRY_ENABLED"] = "false"
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from datetime import datetime
 import logging
 from core.models import IngestRequest, RecallRequest, RecallResponse
 from core.emotion_detector import detect_emotions
 from core.memory_store import MemoryStore
 from core.advice_engine import get_adaptive_advice
 
-app = FastAPI(title="EmoGraph API", version="0.1.0")
+app = FastAPI(title="EmoGraph API", version="0.3.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,9 +50,6 @@ async def recall(request: RecallRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
 @app.post("/smart_recall")
 async def smart_recall(request: RecallRequest):
     try:
@@ -73,3 +76,6 @@ async def smart_recall(request: RecallRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
