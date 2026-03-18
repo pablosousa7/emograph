@@ -20,3 +20,9 @@ class MemoryItem(BaseModel):
 
 class RecallResponse(BaseModel):
     memories: List[MemoryItem]
+
+class SmartRecallResponse(BaseModel):
+    memories: List[MemoryItem]
+    emotional_trends: dict
+    safe_advice: dict
+    summary: str

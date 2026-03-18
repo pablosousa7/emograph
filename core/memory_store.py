@@ -3,6 +3,7 @@ from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunct
 from datetime import datetime
 from typing import List, Dict
 import uuid
+from core.advice_engine import infer_personality  # <-- novo import
 
 class MemoryStore:
     def __init__(self):
@@ -23,7 +24,7 @@ class MemoryStore:
             metadatas=[{
                 "user_id": user_id,
                 "timestamp": datetime.utcnow().isoformat(),
-                "emotions": str(emotions),  # salvo como string (fácil de ler)
+                "emotions": str(emotions),
                 **metadata
             }]
         )
@@ -40,8 +41,33 @@ class MemoryStore:
             meta = results["metadatas"][0][i]
             memories.append({
                 "text": results["documents"][0][i],
-                "emotions": eval(meta["emotions"]),  # volta pra lista
+                "emotions": eval(meta["emotions"]),
                 "timestamp": meta["timestamp"],
                 "similarity": results["distances"][0][i]
             })
         return memories
+
+    def get_emotional_trends(self, user_id: str, days: int = 30) -> dict:
+        results = self.collection.query(query_texts=[""], n_results=50, where={"user_id": user_id})
+        trends = {"sadness_trend": 0, "anger_recurrence": 0, "total_memories": 0}
+        if not results["documents"][0]:
+            return trends
+        for meta in results["metadatas"][0]:
+            emotions = eval(meta["emotions"])
+            for e in emotions:
+                if e["emotion"].lower() in ["sadness", "grief"] and e["score"] > 0.4:
+                    trends["sadness_trend"] += 1
+                if e["emotion"].lower() in ["anger", "rage"] and e["score"] > 0.5:
+                    trends["anger_recurrence"] += 1
+            trends["total_memories"] += 1
+        return trends
+
+    def get_or_update_profile(self, user_id: str, text: str, emotions: List[Dict]) -> Dict:
+        profile_collection = self.client.get_or_create_collection(name="user_profiles")
+        new_traits = infer_personality(text, emotions)
+        profile_collection.add(
+            documents=["profile"],
+            ids=[user_id],
+            metadatas=[{"user_id": user_id, **new_traits}]
+        )
+        return new_traits
